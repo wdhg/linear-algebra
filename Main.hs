@@ -98,15 +98,16 @@ dimensions :: Matrix -> (Int, Int)
 dimensions (Matrix columns@(column : _))
   = (dimension column, length columns)
 
+sortRows :: Matrix -> Matrix
+sortRows
+  = undefined
+
 -- to Row Echelon Form
 toREF :: Matrix -> Matrix
 toREF matrix
   = undefined
     where
       matrixT = transpose matrix
-      sort :: Matrix -> Matrix
-      sort (Matrix rows)
-        = undefined
       reduceRow :: Vector -> Int -> Vector -> Vector
       reduceRow
         = undefined
