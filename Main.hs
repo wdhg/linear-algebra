@@ -1,7 +1,9 @@
 newtype Vector
   = Vector [Double]
+    deriving Eq
 newtype Matrix
   = Matrix [Vector]
+    deriving Eq
 
 instance Show Vector where
   show (Vector xs)
@@ -27,6 +29,7 @@ m1 = Matrix [v1, v2]
 m2 = transpose m1
 m3 = Matrix [ Vector [10, 2]
             , Vector [4, 2] ]
+m4 = Matrix [v2, v1]
 
 vecAdd :: Vector -> Vector -> Vector
 vecAdd (Vector xs) (Vector ys)
@@ -39,14 +42,6 @@ vecSub (Vector xs) (Vector ys)
 vecDot :: Vector -> Vector -> Double
 vecDot (Vector xs) (Vector ys)
   = sum $ zipWith (*) xs ys
-
-vecPush :: Double -> Vector -> Vector
-vecPush x (Vector xs)
-  = Vector (x : xs)
-
-vecPop :: Vector -> (Double, Vector)
-vecPop (Vector (x : xs))
-  = (x, Vector xs)
 
 dimension :: Vector -> Int
 dimension (Vector xs)
@@ -78,14 +73,6 @@ matMul :: Matrix -> Matrix -> Matrix
 matMul matrix (Matrix columns)
   = Matrix $ map (matMulVec matrix) columns
 
-matPush :: Vector -> Matrix -> Matrix
-matPush column (Matrix columns)
-  = Matrix (column : columns)
-
-matPop :: Matrix -> (Vector, Matrix)
-matPop (Matrix (column : columns))
-  = (column, Matrix columns)
-
 identity :: Int -> Matrix
 identity size
   = Matrix $ map createColumn [0..size - 1]
@@ -99,8 +86,17 @@ dimensions (Matrix columns@(column : _))
   = (dimension column, length columns)
 
 sortRows :: Matrix -> Matrix
-sortRows
-  = undefined
+sortRows matrix
+  = transpose $ sortRows' $ transpose matrix
+    where
+      sortRows' :: Matrix -> Matrix
+      sortRows' (Matrix [])
+        = Matrix []
+      sortRows' (Matrix rows)
+        = Matrix (row : rows')
+          where
+            row            = Vector $ minimum $ map (\(Vector xs) -> xs) rows
+            (Matrix rows') = sortRows' $ Matrix $ filter (/= row) rows
 
 -- to Row Echelon Form
 toREF :: Matrix -> Matrix
