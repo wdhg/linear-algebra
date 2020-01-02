@@ -43,6 +43,10 @@ vecDot :: Vector -> Vector -> Double
 vecDot (Vector xs) (Vector ys)
   = sum $ zipWith (*) xs ys
 
+vecIndex :: Vector -> Int -> Double
+vecIndex (Vector xs) i
+  = xs !! i
+
 dimension :: Vector -> Int
 dimension (Vector xs)
   = length xs
@@ -85,6 +89,7 @@ dimensions :: Matrix -> (Int, Int)
 dimensions (Matrix columns@(column : _))
   = (dimension column, length columns)
 
+-- sorts rows of a matrix by sorting them as lists
 sortRows :: Matrix -> Matrix
 sortRows matrix
   = transpose $ sortRows' $ transpose matrix
@@ -104,10 +109,9 @@ toREF matrix
   = undefined
     where
       matrixT = transpose matrix
-      reduceRow :: Vector -> Int -> Vector -> Vector
-      reduceRow
+      reduceByRow :: Vector -> Matrix -> Matrix
+      reduceByRow (Matrix rows)
         = undefined
-
 
 -- to Reduced Row Echelon Form
 toRREF :: Matrix -> Matrix
