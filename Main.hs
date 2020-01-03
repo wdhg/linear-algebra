@@ -99,7 +99,6 @@ sortColumns (Matrix columns)
       sortedColumn       = Vector $ minimum $ map (\(Vector xs) -> xs) columns
       (Matrix remaining) = sortColumns $ Matrix $ filter (/= sortedColumn) columns
 
-
 sortRows :: Matrix -> Matrix
 sortRows
   = transpose . sortColumns . transpose
