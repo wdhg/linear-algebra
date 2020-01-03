@@ -43,6 +43,10 @@ vecDot :: Vector -> Vector -> Double
 vecDot (Vector xs) (Vector ys)
   = sum $ zipWith (*) xs ys
 
+vecScale :: Vector -> Double -> Vector
+vecScale (Vector xs) scalar
+  = Vector (map (* scalar) xs)
+
 vecIndex :: Vector -> Int -> Double
 vecIndex (Vector xs) i
   = xs !! i
@@ -107,8 +111,6 @@ sortRows
 toREF :: Matrix -> Matrix
 toREF matrix
   = undefined
-    where
-      matrixT = transpose matrix
 
 -- to Reduced Row Echelon Form
 toRREF :: Matrix -> Matrix
