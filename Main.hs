@@ -89,19 +89,20 @@ dimensions :: Matrix -> (Int, Int)
 dimensions (Matrix columns@(column : _))
   = (dimension column, length columns)
 
--- sorts rows of a matrix by sorting them as lists
-sortRows :: Matrix -> Matrix
-sortRows matrix
-  = transpose $ sortRows' $ transpose matrix
+-- sorts column vectors of a matrix by sorting them as lists
+sortColumns :: Matrix -> Matrix
+sortColumns (Matrix [])
+  = Matrix []
+sortColumns (Matrix columns)
+  = Matrix (sortedColumn : remaining)
     where
-      sortRows' :: Matrix -> Matrix
-      sortRows' (Matrix [])
-        = Matrix []
-      sortRows' (Matrix rows)
-        = Matrix (row : rows')
-          where
-            row            = Vector $ minimum $ map (\(Vector xs) -> xs) rows
-            (Matrix rows') = sortRows' $ Matrix $ filter (/= row) rows
+      sortedColumn       = Vector $ minimum $ map (\(Vector xs) -> xs) columns
+      (Matrix remaining) = sortColumns $ Matrix $ filter (/= sortedColumn) columns
+
+
+sortRows :: Matrix -> Matrix
+sortRows
+  = transpose . sortColumns . transpose
 
 -- to Row Echelon Form
 toREF :: Matrix -> Matrix
