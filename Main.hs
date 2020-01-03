@@ -110,9 +110,6 @@ toREF matrix
   = undefined
     where
       matrixT = transpose matrix
-      reduceByRow :: Vector -> Matrix -> Matrix
-      reduceByRow (Matrix rows)
-        = undefined
 
 -- to Reduced Row Echelon Form
 toRREF :: Matrix -> Matrix
