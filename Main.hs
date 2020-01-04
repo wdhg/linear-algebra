@@ -114,14 +114,11 @@ matTail (Matrix (_ : vectors))
   = Matrix vectors
 
 -- to Row Echelon Form
--- Sort rows
--- Take first row off
--- Get the column of shrunk matrix
--- Get new matrix by scaling the row by the scalars in the column
--- add row to matrix
--- Subtract new matrix from old matrix to get resultant matrix
--- Shrink matrix on both rows and columns and turn that into REF
--- Expand matrix again
+-- sort rows. get first row and remaining rows
+-- reduce the remaining rows with the first row
+-- shrink the rows by the first column
+-- reduce matrix of reduced rows
+-- expand matrix with row
 toREF :: Matrix -> Matrix
 toREF (Matrix [])
   = Matrix []
