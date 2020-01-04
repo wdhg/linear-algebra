@@ -107,7 +107,22 @@ sortRows :: Matrix -> Matrix
 sortRows
   = transpose . sortColumns . transpose
 
+matShrink :: Matrix -> Matrix
+matShrink (Matrix (_ : vectors))
+  = Matrix $ map (\(Vector xs) -> Vector $ tail xs) vectors
+
+matExpand :: Vector -> Matrix -> Matrix
+matExpand
+  = undefined
+
 -- to Row Echelon Form
+-- Sort rows
+-- Take first row off
+-- Get the column of shrunk matrix
+-- Get new matrix by scaling the row by the scalars in the column
+-- Subtract new matrix from old matrix to get resultant matrix
+-- Shrink matrix on both rows and columns and turn that into REF
+-- Expand matrix again
 toREF :: Matrix -> Matrix
 toREF matrix
   = undefined
