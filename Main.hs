@@ -6,6 +6,8 @@ newtype Matrix
     deriving Eq
 
 instance Show Vector where
+  show (Vector [])
+    = "[]"
   show (Vector xs)
     = unlines $ pad $ map show xs
       where
@@ -16,6 +18,8 @@ instance Show Vector where
               width = maximum $ map length items
 
 instance Show Matrix where
+  show (Matrix [])
+    = "[[]]"
   show matrix@(Matrix columns)
     = unlines $ map unwords rows
       where
@@ -30,6 +34,7 @@ m2 = transpose m1
 m3 = Matrix [ Vector [10, 2]
             , Vector [4, 2] ]
 m4 = Matrix [v2, v1]
+m5 = Matrix [v1,v2,v2,v1]
 
 vecAdd :: Vector -> Vector -> Vector
 vecAdd (Vector xs) (Vector ys)
@@ -98,32 +103,28 @@ sortColumns :: Matrix -> Matrix
 sortColumns (Matrix [])
   = Matrix []
 sortColumns (Matrix columns)
-  = Matrix (sortedColumn : remaining)
+  = Matrix $ sortedColumn : remaining
     where
-      sortedColumn       = Vector $ minimum $ map (\(Vector xs) -> xs) columns
-      (Matrix remaining) = sortColumns $ Matrix $ filter (/= sortedColumn) columns
+      sortedColumn        = Vector $ minimum $ map (\(Vector xs) -> xs) columns
+      (before, _ : after) = span (/= sortedColumn) columns
+      (Matrix remaining)  = sortColumns $ Matrix $ before ++ after
 
-sortRows :: Matrix -> Matrix
-sortRows
-  = transpose . sortColumns . transpose
-
-matShrink :: Matrix -> Matrix
-matShrink (Matrix (_ : vectors))
-  = Matrix $ map (\(Vector xs) -> Vector $ tail xs) vectors
-
-matExpand :: Vector -> Matrix -> Matrix
-matExpand
-  = undefined
+matTail :: Matrix -> Matrix
+matTail (Matrix (_ : vectors))
+  = Matrix vectors
 
 -- to Row Echelon Form
 -- Sort rows
 -- Take first row off
 -- Get the column of shrunk matrix
 -- Get new matrix by scaling the row by the scalars in the column
+-- add row to matrix
 -- Subtract new matrix from old matrix to get resultant matrix
 -- Shrink matrix on both rows and columns and turn that into REF
 -- Expand matrix again
 toREF :: Matrix -> Matrix
+toREF (Matrix [])
+  = Matrix []
 toREF matrix
   = undefined
 
