@@ -124,6 +124,21 @@ toREF (Matrix [])
   = Matrix []
 toREF matrix
   = undefined
+  {-
+  = subMatrix
+    where
+      (Matrix (row : rows))
+        = sortColumns $ transpose matrix
+      reducedRows
+        = map (reduce row) rows
+      subMatrix
+        = toREF $ matTail $ transpose $ Matrix reducedRows
+      reduce :: Vector -> Vector -> Vector
+      reduce subtrahend@(Vector (0 : _)) _
+        = subtrahend
+      reduce subtrahend@(Vector (pivot : _)) minuend@(Vector (scale : _))
+        = minuend `vecSub` (subtrahend `vecScale` (scale / pivot))
+  -}
 
 -- to Reduced Row Echelon Form
 toRREF :: Matrix -> Matrix
