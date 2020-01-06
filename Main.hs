@@ -109,10 +109,6 @@ sortColumns (Matrix columns)
       (before, _ : after) = span (/= sortedColumn) columns
       (Matrix remaining)  = sortColumns $ Matrix $ before ++ after
 
-matTail :: Matrix -> Matrix
-matTail (Matrix (_ : vectors))
-  = Matrix vectors
-
 -- to Row Echelon Form
 -- sort rows. get first row and remaining rows
 -- reduce the remaining rows with the first row
