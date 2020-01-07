@@ -35,6 +35,11 @@ m3 = Matrix [ Vector [10, 2]
             , Vector [4, 2] ]
 m4 = Matrix [v2, v1]
 m5 = Matrix [v1,v2,v2,v1]
+m6 = Matrix [ Vector [1,2,4,6]
+            , Vector [2,3,4,5]
+            , Vector [7,4,3,1]
+            , Vector [9,3,7,4]
+            ]
 
 vecAdd :: Vector -> Vector -> Vector
 vecAdd (Vector xs) (Vector ys)
