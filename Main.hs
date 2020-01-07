@@ -7,7 +7,7 @@ newtype Matrix
 
 instance Show Vector where
   show (Vector [])
-    = "[]"
+    = "[-]"
   show (Vector xs)
     = unlines $ pad $ map show xs
       where
@@ -19,7 +19,7 @@ instance Show Vector where
 
 instance Show Matrix where
   show (Matrix [])
-    = "[[]]"
+    = "[[-]]"
   show matrix@(Matrix columns)
     = unlines $ map unwords rows
       where
@@ -55,6 +55,16 @@ vecScale (Vector xs) scalar
 vecIndex :: Vector -> Int -> Double
 vecIndex (Vector xs) i
   = xs !! i
+
+vecExtend :: Vector -> Vector
+vecExtend (Vector xs)
+  = Vector (0 : xs)
+
+vecShrink :: Vector -> Vector
+vecShrink vector@(Vector [_])
+  = vector
+vecShrink (Vector (_ : xs))
+  = Vector xs
 
 dimension :: Vector -> Int
 dimension (Vector xs)
@@ -110,31 +120,33 @@ sortColumns (Matrix columns)
       (Matrix remaining)  = sortColumns $ Matrix $ before ++ after
 
 -- to Row Echelon Form
--- sort rows. get first row and remaining rows
--- reduce the remaining rows with the first row
--- shrink the rows by the first column
--- reduce matrix of reduced rows
--- expand matrix with row
 toREF :: Matrix -> Matrix
-toREF (Matrix [])
-  = Matrix []
-toREF matrix
-  = undefined
-  {-
-  = subMatrix
+toREF
+  = transpose . toREF' . transpose
     where
-      (Matrix (row : rows))
-        = sortColumns $ transpose matrix
-      reducedRows
-        = map (reduce row) rows
-      subMatrix
-        = toREF $ matTail $ transpose $ Matrix reducedRows
-      reduce :: Vector -> Vector -> Vector
-      reduce subtrahend@(Vector (0 : _)) _
-        = subtrahend
-      reduce subtrahend@(Vector (pivot : _)) minuend@(Vector (scale : _))
-        = minuend `vecSub` (subtrahend `vecScale` (scale / pivot))
-  -}
+      toREF' :: Matrix -> Matrix
+      toREF' (Matrix [])
+        = Matrix []
+      toREF' matrix@(Matrix [_])
+        = matrix
+      toREF' matrix
+        = Matrix $ row : map vecExtend remainingRows
+          where
+            (Matrix (row : rows))
+              = reduce matrix
+            (Matrix remainingRows)
+              = toREF' $ Matrix $ map vecShrink rows
+            scaleDown :: Vector -> Vector
+            scaleDown vector@(Vector (0 : _))
+              = vector
+            scaleDown vector@(Vector (scale : _))
+              = vecScale vector $ recip scale
+            reduce :: Matrix -> Matrix
+            reduce (Matrix (row : rows))
+              = Matrix $ row' : map ((`vecSub` row') . scaleDown) rows
+                where
+                  row'
+                    = scaleDown row
 
 -- to Reduced Row Echelon Form
 toRREF :: Matrix -> Matrix
