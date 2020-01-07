@@ -135,7 +135,7 @@ toREF' matrix@(Matrix vectors)
   | otherwise           = Matrix $ row : map vecExtend remainingRows
     where
       (Matrix (row : rows))
-        = reduce matrix
+        = reduce $ transpose matrix
       (Matrix remainingRows)
         = toREF' $ Matrix $ map vecShrink rows
       reduce :: Matrix -> Matrix
