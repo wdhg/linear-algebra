@@ -147,5 +147,16 @@ toREF' matrix@(Matrix vectors)
 
 -- to Reduced Row Echelon Form
 toRREF :: Matrix -> Matrix
-toRREF
-  = toREF' .  toREF
+toRREF matrix
+  = Matrix $ map simplifiy columns
+    where
+      (Matrix columns)
+        = toREF' $ toREF matrix
+      simplifiy :: Vector -> Vector
+      simplifiy vector@(Vector xs)
+        = vecScale vector $ recip pivot
+          where
+            pivot
+              = case filter (/= 0) xs of
+                  [] -> 1
+                  xs -> head xs
