@@ -128,24 +128,24 @@ sortColumns (Matrix columns)
 toREF :: Matrix -> Matrix
 toREF
   = transpose . toREF' . transpose
+
+toREF' :: Matrix -> Matrix
+toREF' matrix@(Matrix vectors)
+  | length vectors <= 1 = matrix
+  | otherwise           = Matrix $ row : map vecExtend remainingRows
     where
-      toREF' :: Matrix -> Matrix
-      toREF' matrix@(Matrix vectors)
-        | length vectors <= 1 = matrix
-        | otherwise           = Matrix $ row : map vecExtend remainingRows
-          where
-            (Matrix (row : rows))
-              = reduce matrix
-            (Matrix remainingRows)
-              = toREF' $ Matrix $ map vecShrink rows
-            reduce :: Matrix -> Matrix
-            reduce (Matrix (row' : rows'))
-              = Matrix $ row' : map (reduceRow row') rows'
-            reduceRow :: Vector -> Vector -> Vector
-            reduceRow subtrahend@(Vector (x : _)) minuend@(Vector (y : _))
-              = (vecScale minuend x) `vecSub` (vecScale subtrahend y)
+      (Matrix (row : rows))
+        = reduce matrix
+      (Matrix remainingRows)
+        = toREF' $ Matrix $ map vecShrink rows
+      reduce :: Matrix -> Matrix
+      reduce (Matrix (row' : rows'))
+        = Matrix $ row' : map (reduceRow row') rows'
+      reduceRow :: Vector -> Vector -> Vector
+      reduceRow subtrahend@(Vector (x : _)) minuend@(Vector (y : _))
+        = (vecScale minuend x) `vecSub` (vecScale subtrahend y)
 
 -- to Reduced Row Echelon Form
 toRREF :: Matrix -> Matrix
 toRREF
-  = undefined
+  = toREF' .  toREF
