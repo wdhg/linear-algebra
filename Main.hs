@@ -141,17 +141,12 @@ toREF
               = reduce matrix
             (Matrix remainingRows)
               = toREF' $ Matrix $ map vecShrink rows
-            scaleDown :: Vector -> Vector
-            scaleDown vector@(Vector (0 : _))
-              = vector
-            scaleDown vector@(Vector (scale : _))
-              = vecScale vector $ recip scale
             reduce :: Matrix -> Matrix
             reduce (Matrix (row : rows))
-              = Matrix $ row' : map ((`vecSub` row') . scaleDown) rows
-                where
-                  row'
-                    = scaleDown row
+              = Matrix $ row : map (reduceRow row) rows
+            reduceRow :: Vector -> Vector -> Vector
+            reduceRow subtrahend@(Vector (x : _)) minuend@(Vector (y : _))
+              = (vecScale minuend x) `vecSub` (vecScale subtrahend y)
 
 -- to Reduced Row Echelon Form
 toRREF :: Matrix -> Matrix
