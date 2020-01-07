@@ -130,20 +130,17 @@ toREF
   = transpose . toREF' . transpose
     where
       toREF' :: Matrix -> Matrix
-      toREF' (Matrix [])
-        = Matrix []
-      toREF' matrix@(Matrix [_])
-        = matrix
-      toREF' matrix
-        = Matrix $ row : map vecExtend remainingRows
+      toREF' matrix@(Matrix vectors)
+        | length vectors <= 1 = matrix
+        | otherwise           = Matrix $ row : map vecExtend remainingRows
           where
             (Matrix (row : rows))
               = reduce matrix
             (Matrix remainingRows)
               = toREF' $ Matrix $ map vecShrink rows
             reduce :: Matrix -> Matrix
-            reduce (Matrix (row : rows))
-              = Matrix $ row : map (reduceRow row) rows
+            reduce (Matrix (row' : rows'))
+              = Matrix $ row' : map (reduceRow row') rows'
             reduceRow :: Vector -> Vector -> Vector
             reduceRow subtrahend@(Vector (x : _)) minuend@(Vector (y : _))
               = (vecScale minuend x) `vecSub` (vecScale subtrahend y)
