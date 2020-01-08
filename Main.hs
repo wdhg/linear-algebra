@@ -1,3 +1,5 @@
+import qualified Data.List as List
+
 newtype Vector
   = Vector [Double]
     deriving Eq
@@ -115,14 +117,13 @@ dimensions (Matrix columns@(column : _))
 
 -- sorts column vectors of a matrix by sorting them as lists
 sortColumns :: Matrix -> Matrix
-sortColumns (Matrix [])
-  = Matrix []
 sortColumns (Matrix columns)
-  = Matrix $ sortedColumn : remaining
+  = Matrix $ listsToVectors $ List.sort $ vectorsToLists columns
     where
-      sortedColumn        = Vector $ minimum $ map (\(Vector xs) -> xs) columns
-      (before, _ : after) = span (/= sortedColumn) columns
-      (Matrix remaining)  = sortColumns $ Matrix $ before ++ after
+      vectorsToLists
+        = map (\(Vector xs) -> xs)
+      listsToVectors
+        = map (\xs -> Vector xs)
 
 -- to Row Echelon Form
 toREF :: Matrix -> Matrix
@@ -135,7 +136,7 @@ toREF' matrix@(Matrix vectors)
   | otherwise           = Matrix $ row : map vecExtend remainingRows
     where
       (Matrix (row : rows))
-        = reduce $ transpose matrix
+        = reduce $ sortColumns $ transpose matrix
       (Matrix remainingRows)
         = toREF' $ Matrix $ map vecShrink rows
       reduce :: Matrix -> Matrix
